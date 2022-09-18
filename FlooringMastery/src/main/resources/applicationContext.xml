@@ -14,40 +14,38 @@
           http://www.springframework.org/schema/context/spring-context.xsd
           http://www.springframework.org/schema/aop  
           http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+          
+          <bean id="userIO" class="view.UserIOImpl"></bean>
+          
+          <bean id="view" class="view.FlooringView">
+        	<constructor-arg ref="userIO"></constructor-arg>
+    	  </bean>
+          
+ 	<bean id="orderDao"
+          class="dao.OrderDaoImpl"></bean>
+   
+    <bean id="productDao"
+          class="dao.ProductDaoImpl"></bean>
+   
+    <bean id="stateDao"
+          class="dao.StateDaoImpl"></bean>
 
-    <!-- Bean definitions go here -->
-    <bean id="userIO" class="com.sg.flooringmastery.ui.UserIOConsoleImpl"/>
-    
-    <bean id="view" class="com.sg.flooringmastery.ui.View">
-        <constructor-arg ref="userIO"/>
-    </bean>
-    
-    <!-- Change Prod to Training to prevent write access -->
-    <bean id="ordersDao"
-          class="com.sg.flooringmastery.dao.OrdersProdDaoFileImpl"/>
-   
-    <bean id="productsDao"
-          class="com.sg.flooringmastery.dao.ProductsDaoFileImpl"/>
-   
-    <bean id="statesDao"
-          class="com.sg.flooringmastery.dao.StatesDaoFileImpl"/>
-    
-    <!-- Change to stub implementation when training to prevent write access -->
-    <bean id="auditDao"
-          class="com.sg.flooringmastery.dao.AuditDaoFileImpl"/>    
    
     <bean id="service"
-          class="com.sg.flooringmastery.service.FloorServiceImpl">
-        <constructor-arg ref="ordersDao"/>
-        <constructor-arg ref="productsDao"/>
-        <constructor-arg ref="statesDao"/>
-        <constructor-arg ref="auditDao"/>
+          class="service.FloorServiceImpl">
+        <constructor-arg ref="orderDao"></constructor-arg>
+        <constructor-arg ref="productDao"></constructor-arg>
+        <constructor-arg ref="stateDao"></constructor-arg>
     </bean>    
 
-    <bean id="controller"
-          class="com.sg.flooringmastery.controller.Controller">
-        <constructor-arg ref="service"/>
-        <constructor-arg ref="view"/>
-    </bean>
-          
+    <bean id="controller" class="controller.Controller">
+        <constructor-arg ref="service"></constructor-arg>
+        <constructor-arg ref="view"></constructor-arg>
+    </bean> 
 </beans>
+
+    	
+    
+    	
+    
+    

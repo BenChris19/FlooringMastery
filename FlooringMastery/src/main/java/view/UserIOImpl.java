@@ -2,11 +2,13 @@ package view;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Scanner;
 
 public class UserIOImpl implements UserIO {
+	private final Scanner sc = new Scanner(System.in);
 
-	public void print(String prompt) {
-		// TODO Auto-generated method stub
+	public void print(String msg) {
+		System.out.println(msg);
 		
 	}
 
@@ -35,9 +37,20 @@ public class UserIOImpl implements UserIO {
 		return null;
 	}
 
-	public int readInt(String prompt) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int readInt() {
+        boolean invalidInput = true;
+        int num = 0;
+        while (invalidInput) {
+            try {
+                String stringValue = sc.nextLine();
+                // Get the input line, and try and parse
+                num = Integer.parseInt(stringValue); 
+                invalidInput = false; 
+            } catch (NumberFormatException e) {
+                this.print("Input error. Please try again.");
+            }
+        }
+        return num;
 	}
 
 	public int readInt(String prompt, int min, int max) {
