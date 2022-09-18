@@ -1,10 +1,13 @@
 package controller;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import dao.DataPersistenceException;
 import service.FloorService;
+import service.InvalidOrderNumberException;
 import view.FlooringView;
 
 @Component
@@ -19,7 +22,7 @@ public class Controller {
 		this.service = service;
 	}
 	
-	public void run() throws DataPersistenceException {
+	public void run() throws DataPersistenceException, InvalidOrderNumberException {
 		boolean keepGoing = true;
         int menuSelection = 0;
         while (keepGoing) {
@@ -44,9 +47,10 @@ public class Controller {
 		            break;
 		        case 6:
 		            keepGoing = false;
+		            exitProgramme();
 		            break;
 		        default:
-		            unknownCommand();
+		            outOfBounds();
 		    }
 
 		}
@@ -56,9 +60,15 @@ public class Controller {
 	private int getMenuSelection() {
 		return view.displayMenu();
 	}
+	
+	private void exitProgramme() {
+		view.displayEndOfProgramme();
+		
+	}
 
-	private void getOrders() {
-		// TODO Auto-generated method stub
+	private void getOrders() throws InvalidOrderNumberException, DataPersistenceException {
+		LocalDate date = view.displayGetOrders();
+		view.displayOrdersOfDate(service.getOrders(date));
 		
 	}
 
@@ -77,8 +87,8 @@ public class Controller {
 		
 	}
 
-	private void unknownCommand() {
-		// TODO Auto-generated method stub
+	private void outOfBounds() {
+		view.displayInvalidOption();
 		
 	}
 

@@ -19,7 +19,7 @@ public interface UserIO {
 
     int readInt();
 
-    LocalDate readDate(String prompt);
+    LocalDate readDate();
 
     LocalDate readDate(String prompt, LocalDate min, LocalDate max);
 

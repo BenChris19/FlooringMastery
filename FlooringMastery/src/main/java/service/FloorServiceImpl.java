@@ -4,13 +4,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import dao.DataPersistenceException;
 import dao.OrderDao;
 import dao.ProductDao;
 import dao.StateDao;
+import model.Order;
 
 @Component
 public class FloorServiceImpl implements FloorService{
@@ -27,10 +27,17 @@ public class FloorServiceImpl implements FloorService{
         this.stateDao = stateDao;
     }
 
-	public List<Order> getOrders(LocalDate dateChoice) throws InvalidOrderNumberException, DataPersistenceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
+    public List<Order> getOrders(LocalDate chosenDate) throws InvalidOrderNumberException,
+            DataPersistenceException {
+        List<Order> ordersByDate = orderDao.getOrders(chosenDate);
+        if (!ordersByDate.isEmpty()) {
+            return ordersByDate;
+        } else {
+            throw new InvalidOrderNumberException("ERROR: No orders "
+                    + "exist on that date.");
+        }
+    }
 
 	public Order calculateOrder(Order o) throws DataPersistenceException, OrderValidationException,
 			StateValidationException, ProductValidationException {
