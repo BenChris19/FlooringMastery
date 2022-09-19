@@ -2,7 +2,9 @@ package view;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import model.Order;
 import model.Product;
+import model.State;
 
 
 
@@ -72,33 +75,55 @@ public class FlooringView {
 		});
 	}
 	
-	public Order displayAddOrder(List<Product> products, int lastOrder) {
+	public Order displayAddOrder(List<Product> products, List<State> states, int lastOrder) {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
-		io.print("Please enter a future date");
+		io.print("Please enter a future date in the formate MMDDYYYY");
 		LocalDate date = io.readDate();
+		
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Please enter Customer name");
 		String name = io.readString();
+		
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
-		io.print("Please enter state");
-		String state = io.readString();
+		io.print("Please enter state name or state abbreviation");
+		String stateNameAbr = io.readString();
+		State state = io.readState(states, stateNameAbr);
+		
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Please enter desired product type");
 		products.forEach(p->{io.print("---Product type: "+p.getProductType());
 							 io.print("---Cost per square foot: "+p.getCostPerSquareFoot());
 							 io.print("---Labor cost per square foot"+p.getLaborCostPerSquareFoot()+"\n");});
-		String productType = io.readString();		//ReadProduct
+		String productTypeName = io.readString();
+		Product productType = io.readProduct(products,productTypeName);
+		
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Please enter the area you want to buy in square foot (Just enter decimals)");
 		BigDecimal area = io.readBigDecimal();
-		BigDecimal costPerSquareFoot = products.get(products.indexOf(productType)).getCostPerSquareFoot();
-		BigDecimal laborCostPerSquareFoot = products.get(products.indexOf(productType)).getLaborCostPerSquareFoot();
+		
+		BigDecimal costPerSquareFoot = productType.getCostPerSquareFoot();
+		BigDecimal laborCostPerSquareFoot = productType.getLaborCostPerSquareFoot();
 		BigDecimal materialCost = costPerSquareFoot.multiply(laborCostPerSquareFoot, new MathContext(4));
 		BigDecimal laborCost = laborCostPerSquareFoot.multiply(area, new MathContext(4));
-		//BigDecimal tax = (MaterialCost + LaborCost) * (TaxRate/100)
-		return new Order(date, lastOrder, name, state, null, productType, area, costPerSquareFoot,
-				laborCostPerSquareFoot, materialCost,laborCost,
-				null,null); //tax rate & Tax & Total
+		BigDecimal tax = materialCost.add(laborCost).multiply(state.getTaxRate().divide(new BigDecimal("100")));
+		BigDecimal total = materialCost.add(laborCost.add(tax));
+		
+		Order order = new Order();
+        order.setDate(date);
+        order.setOrderNumber(lastOrder);
+        order.setCustomerName(name);
+        order.setState(state.getStateAbbreviation());
+        order.setTaxRate(state.getTaxRate());
+        order.setProductType(productType.getProductType());
+        order.setArea(area);
+        order.setCostPerSquareFoot(costPerSquareFoot);
+        order.setLaborCostPerSquareFoot(laborCostPerSquareFoot);
+        order.setMaterialCost(materialCost);
+        order.setLaborCost(laborCost);
+        order.setTax(tax);
+        order.setTotal(total);
+		
+		return order;
 	}
 
 }

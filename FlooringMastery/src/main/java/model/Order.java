@@ -26,9 +26,5 @@ public class Order {
 	public Order() {
 		
 	}
-	public Order(LocalDate date2, int lastOrder, String name, String state2, Object object, String productType2,
-			BigDecimal area2, BigDecimal costPerSquareFoot2, BigDecimal laborCostPerSquareFoot2,
-			BigDecimal materialCost2, BigDecimal laborCost2, Object object2, Object object3) {
 
-	}
 }

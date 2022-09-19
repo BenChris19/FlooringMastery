@@ -4,19 +4,26 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import model.Order;
+import service.OrderValidationException;
 
 
 public class OrderDaoImpl implements OrderDao {
 	
     private int lastOrderNumber;
+    private Map<Integer, Order> orders = new HashMap<>();
+    
     private final String HEADER = "OrderNumber,CustomerName,State,TaxRate,ProductType,"
     		+ "Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total";
     private final String DELIMITER = ",";
@@ -33,13 +40,16 @@ public class OrderDaoImpl implements OrderDao {
 	public List<Order> getOrders(LocalDate dateChoice) throws DataPersistenceException {
 		return loadOrdersByDate(dateChoice);
 	}
+	
 	public int getLastOrderNumber() throws DataPersistenceException {
-		return this.loadLastOrderNumber()
-;	}
+		return this.loadLastOrderNumber();
+	}
 
-	public Order addOrder(Order o) throws DataPersistenceException {
-		// TODO Auto-generated method stub
-		return null;
+	public Order addOrder(Order o) throws DataPersistenceException, OrderValidationException {
+		this.loadAllOrders();
+		Order order = this.orders.put(o.getOrderNumber(), o);
+		writeOrder(o);
+		return order;
 	}
 
 	public Order editOrder(Order editedOrder) throws DataPersistenceException {
@@ -50,6 +60,58 @@ public class OrderDaoImpl implements OrderDao {
 	public Order removeOrder(Order o) throws DataPersistenceException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private void loadAllOrders() throws DataPersistenceException {
+        Scanner scanner;
+
+        File file = new File(this.ORDER_FILE);
+        File[] directoryListing = file.listFiles();
+
+        int lastNum = 0;
+        
+        if (directoryListing != null) {
+            for (File f : directoryListing) {
+                if (f.isFile()) {
+                    try {
+                        scanner = new Scanner(
+                                new BufferedReader(
+                                        new FileReader(f)));
+                        String currentLine;
+                        String[] currentTokens;
+                        scanner.nextLine();//Skips scanning document headers
+                        while (scanner.hasNextLine()) {
+                            currentLine = scanner.nextLine();
+                            currentTokens = currentLine.split(DELIMITER);
+                            Order currentOrder = new Order();
+                            currentOrder.setDate(LocalDate.parse(f.getName().substring(7, 15),
+                                    DateTimeFormatter.ofPattern("MMddyyyy")));
+                            currentOrder.setOrderNumber(Integer.parseInt(currentTokens[0]));
+                            currentOrder.setCustomerName(currentTokens[1]);
+                            currentOrder.setState(currentTokens[2]);
+                            currentOrder.setTaxRate(new BigDecimal(currentTokens[3]));
+                            currentOrder.setProductType(currentTokens[4]);
+                            currentOrder.setArea(new BigDecimal(currentTokens[5]));
+                            currentOrder.setCostPerSquareFoot(new BigDecimal(currentTokens[6]));
+                            currentOrder.setLaborCostPerSquareFoot(new BigDecimal(currentTokens[7]));
+                            currentOrder.setMaterialCost(new BigDecimal(currentTokens[8]));
+                            currentOrder.setLaborCost(new BigDecimal(currentTokens[9]));
+                            currentOrder.setTax(new BigDecimal(currentTokens[10]));
+                            currentOrder.setTotal(new BigDecimal(currentTokens[11]));
+                            this.orders.put(Integer.parseInt(currentTokens[0]), currentOrder);
+                        }
+                        scanner.close();
+                        
+                    } catch (FileNotFoundException e) {
+                        throw new DataPersistenceException("Could not load order data into memory.", e);
+                    }
+                }
+                else {
+                	throw new DataPersistenceException("Incorrect directory file path.");
+                }
+		
+            }
+        }
 	}
 	
 	private int loadLastOrderNumber() throws DataPersistenceException{
@@ -89,6 +151,35 @@ public class OrderDaoImpl implements OrderDao {
             }
         }
         return lastNum+1;
+	}
+	
+	private void writeOrder(Order order) throws OrderValidationException{
+		PrintWriter out;
+		File file;
+		
+		try {
+			file = new File(this.ORDER_FILE+"Orders_"+order.getDate().format(DateTimeFormatter.ofPattern("MMddyyyy"))+".txt");
+			out = new PrintWriter(new FileWriter(file.getAbsolutePath()));
+		}
+		catch(Exception e) {
+			throw new OrderValidationException("Could not save Order data", e);
+		}
+		
+		String OrderAsText= order.getOrderNumber() + DELIMITER;
+		OrderAsText += order.getCustomerName() + DELIMITER;
+		OrderAsText += order.getState() + DELIMITER;
+		OrderAsText += order.getTaxRate() + DELIMITER;
+		OrderAsText += order.getProductType() + DELIMITER;
+		OrderAsText += order.getArea() + DELIMITER;
+		OrderAsText += order.getCostPerSquareFoot() + DELIMITER;
+		OrderAsText += order.getLaborCostPerSquareFoot() + DELIMITER;
+		OrderAsText += order.getMaterialCost() + DELIMITER;
+		OrderAsText += order.getLaborCost() + DELIMITER;
+		OrderAsText += order.getTax() + DELIMITER;
+		OrderAsText += order.getTotal() + DELIMITER;
+			out.println(OrderAsText);
+			out.flush();
+		out.close();
 	}
 	
     private List<Order> loadOrdersByDate(LocalDate chosenDate) throws DataPersistenceException {

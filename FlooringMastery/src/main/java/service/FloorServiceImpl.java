@@ -12,6 +12,7 @@ import dao.ProductDao;
 import dao.StateDao;
 import model.Order;
 import model.Product;
+import model.State;
 
 @Component
 public class FloorServiceImpl implements FloorService{
@@ -45,8 +46,18 @@ public class FloorServiceImpl implements FloorService{
     
     public List<Product> getAllProducts() throws DataPersistenceException{
     	List<Product> allProducts = this.productDao.getAllProducts();
-        if (!allProducts .isEmpty()) {
+        if (!allProducts.isEmpty()) {
             return allProducts;
+        } else {
+            throw new DataPersistenceException("ERROR: No orders "
+                    + "exist on that date.");
+        }
+    }
+    
+    public List<State> getAllStates() throws DataPersistenceException{
+    	List<State> allStates = this.stateDao.getAllStates();
+        if (!allStates.isEmpty()) {
+            return allStates;
         } else {
             throw new DataPersistenceException("ERROR: No orders "
                     + "exist on that date.");
@@ -65,9 +76,15 @@ public class FloorServiceImpl implements FloorService{
 		return null;
 	}
 
-	public Order addOrder(Order o) throws DataPersistenceException {
-		// TODO Auto-generated method stub
-		return null;
+	public Order addOrder(Order o) throws DataPersistenceException, OrderValidationException {
+		Order addOrder = null;
+		if(o!=null) {
+			addOrder = this.orderDao.addOrder(o);
+		}
+		else {
+			throw new DataPersistenceException("Order is null.");			
+		}
+		return addOrder;
 	}
 
 	public Order compareOrders(Order savedOrder, Order editedOrder)

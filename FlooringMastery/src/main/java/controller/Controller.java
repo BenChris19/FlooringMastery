@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import dao.DataPersistenceException;
+import model.Order;
 import service.FloorService;
 import service.InvalidOrderNumberException;
+import service.OrderValidationException;
 import view.FlooringView;
 
 @Component
@@ -22,7 +24,7 @@ public class Controller {
 		this.service = service;
 	}
 	
-	public void run() throws DataPersistenceException, InvalidOrderNumberException {
+	public void run() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
 		boolean keepGoing = true;
         int menuSelection = 0;
         while (keepGoing) {
@@ -52,7 +54,6 @@ public class Controller {
 		        default:
 		            outOfBounds();
 		    }
-
 		}
 		exitMessage();
     }
@@ -71,8 +72,9 @@ public class Controller {
 		view.displayOrdersOfDate(service.getOrders(date));
 	}
 
-	private void addOrder() throws DataPersistenceException, InvalidOrderNumberException {
-		view.displayAddOrder(this.service.getAllProducts(),this.service.getLastOrderNumber());
+	private void addOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
+		Order newOrder = view.displayAddOrder(this.service.getAllProducts(), this.service.getAllStates(), this.service.getLastOrderNumber());
+		this.service.addOrder(newOrder);
 	}
 
 	private void editOrder() {

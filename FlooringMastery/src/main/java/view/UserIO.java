@@ -1,7 +1,11 @@
 package view;
 
 import java.math.BigDecimal;
+import model.Product;
+import model.State;
+
 import java.time.LocalDate;
+import java.util.List;
 
 public interface UserIO {
 
@@ -16,7 +20,8 @@ public interface UserIO {
     int readInt();
 
     LocalDate readDate();
-
-    LocalDate readDate(String prompt, LocalDate min, LocalDate max);
-
+    
+    Product readProduct(List<Product> products, String productName);
+    
+    State readState(List<State> states, String stateNameAbr);
 }

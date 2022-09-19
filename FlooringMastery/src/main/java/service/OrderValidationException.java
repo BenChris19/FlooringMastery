@@ -7,7 +7,7 @@ public class OrderValidationException extends Exception {
         super(message);
     }
 
-    OrderValidationException(String message, Throwable cause) {
+    public OrderValidationException(String message, Throwable cause) {
         super(message, cause);
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 
 import model.Order;
 import model.Product;
+import model.State;
 import dao.DataPersistenceException;
 
 
@@ -17,6 +18,8 @@ public interface FloorService {
     int getLastOrderNumber() throws DataPersistenceException;
     
     List<Product> getAllProducts() throws DataPersistenceException;
+    
+    List<State> getAllStates() throws DataPersistenceException;
 
     Order calculateOrder(Order o) throws DataPersistenceException,
     OrderValidationException, StateValidationException, ProductValidationException;
@@ -24,7 +27,7 @@ public interface FloorService {
     Order getOrder(LocalDate dateChoice, int orderNumber) throws
     DataPersistenceException, InvalidOrderNumberException;
 
-    Order addOrder(Order o) throws DataPersistenceException;
+    Order addOrder(Order o) throws DataPersistenceException, OrderValidationException;
 
     Order compareOrders(Order savedOrder, Order editedOrder)
     throws DataPersistenceException, StateValidationException,

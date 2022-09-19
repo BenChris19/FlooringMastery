@@ -4,9 +4,13 @@ import java.math.BigDecimal;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import model.Product;
+import model.State;
 
 public class UserIOImpl implements UserIO {
 	private final Scanner sc = new Scanner(System.in);
@@ -93,10 +97,26 @@ public class UserIOImpl implements UserIO {
         } while(!validInput);
         return date;
     }
+	
+	public Product readProduct(List<Product> products,String productName) {
+		Product foundProduct = null;
+		for(Product p: products) {
+			if(p.getProductType().equalsIgnoreCase(productName)) {
+				foundProduct = p;
+			}
+		}
+		return foundProduct;
+	}
 
-	public LocalDate readDate(String prompt, LocalDate min, LocalDate max) {
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	public State readState(List<State> states, String stateNameAbr) {
+		State foundState = null;
+		for(State s: states) {
+			if(s.getStateName().equalsIgnoreCase(stateNameAbr) || s.getStateAbbreviation().equalsIgnoreCase(stateNameAbr)) {
+				foundState = s;
+			}
+		}
+		return foundState;
 	}
 
 }
