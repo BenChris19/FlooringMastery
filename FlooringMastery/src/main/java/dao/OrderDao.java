@@ -8,6 +8,8 @@ import model.Order;
 public interface OrderDao {
 
     List<Order> getOrders(LocalDate dateChoice) throws DataPersistenceException;
+    
+    int getLastOrderNumber() throws DataPersistenceException;
 
     Order addOrder(Order o) throws DataPersistenceException;
 

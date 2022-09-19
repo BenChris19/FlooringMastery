@@ -9,13 +9,9 @@ public interface UserIO {
 
     String formatCurrency(BigDecimal amount);
 
-    String readString(String prompt);
+    String readString();
 
-    String readString(String prompt, int max);
-
-    BigDecimal readBigDecimal(String prompt, int scale);
-
-    BigDecimal readBigDecimal(String prompt, int scale, BigDecimal min);
+    BigDecimal readBigDecimal();
 
     int readInt();
 

@@ -11,6 +11,7 @@ import dao.OrderDao;
 import dao.ProductDao;
 import dao.StateDao;
 import model.Order;
+import model.Product;
 
 @Component
 public class FloorServiceImpl implements FloorService{
@@ -35,6 +36,19 @@ public class FloorServiceImpl implements FloorService{
             return ordersByDate;
         } else {
             throw new InvalidOrderNumberException("ERROR: No orders "
+                    + "exist on that date.");
+        }
+    }
+    public int getLastOrderNumber() throws DataPersistenceException {
+        return orderDao.getLastOrderNumber();
+    }    	
+    
+    public List<Product> getAllProducts() throws DataPersistenceException{
+    	List<Product> allProducts = this.productDao.getAllProducts();
+        if (!allProducts .isEmpty()) {
+            return allProducts;
+        } else {
+            throw new DataPersistenceException("ERROR: No orders "
                     + "exist on that date.");
         }
     }

@@ -69,12 +69,10 @@ public class Controller {
 	private void getOrders() throws InvalidOrderNumberException, DataPersistenceException {
 		LocalDate date = view.displayGetOrders();
 		view.displayOrdersOfDate(service.getOrders(date));
-		
 	}
 
-	private void addOrder() {
-		// TODO Auto-generated method stub
-		
+	private void addOrder() throws DataPersistenceException, InvalidOrderNumberException {
+		view.displayAddOrder(this.service.getAllProducts(),this.service.getLastOrderNumber());
 	}
 
 	private void editOrder() {

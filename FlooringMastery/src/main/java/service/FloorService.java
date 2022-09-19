@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import model.Order;
+import model.Product;
 import dao.DataPersistenceException;
 
 
@@ -12,6 +13,10 @@ public interface FloorService {
 	
     List<Order> getOrders(LocalDate dateChoice) throws InvalidOrderNumberException,
     DataPersistenceException;
+    
+    int getLastOrderNumber() throws DataPersistenceException;
+    
+    List<Product> getAllProducts() throws DataPersistenceException;
 
     Order calculateOrder(Order o) throws DataPersistenceException,
     OrderValidationException, StateValidationException, ProductValidationException;

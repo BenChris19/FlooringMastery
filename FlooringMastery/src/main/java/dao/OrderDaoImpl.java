@@ -23,7 +23,7 @@ public class OrderDaoImpl implements OrderDao {
     private final String ORDER_FILE;
     
     public OrderDaoImpl() {
-    	this.ORDER_FILE="SampleFileData/Orders/";
+    	this.ORDER_FILE="src/main/resources/SampleFileData/Orders/";
     }
 
     public OrderDaoImpl(String filePath) {
@@ -31,8 +31,11 @@ public class OrderDaoImpl implements OrderDao {
     }
 
 	public List<Order> getOrders(LocalDate dateChoice) throws DataPersistenceException {
-		return loadOrders(dateChoice);
+		return loadOrdersByDate(dateChoice);
 	}
+	public int getLastOrderNumber() throws DataPersistenceException {
+		return this.loadLastOrderNumber()
+;	}
 
 	public Order addOrder(Order o) throws DataPersistenceException {
 		// TODO Auto-generated method stub
@@ -49,12 +52,51 @@ public class OrderDaoImpl implements OrderDao {
 		return null;
 	}
 	
-    private List<Order> loadOrders(LocalDate chosenDate) throws DataPersistenceException {
+	private int loadLastOrderNumber() throws DataPersistenceException{
+        Scanner scanner;
+
+        File file = new File(this.ORDER_FILE);
+        File[] directoryListing = file.listFiles();
+
+        int lastNum = 0;
+        
+        if (directoryListing != null) {
+            for (File f : directoryListing) {
+                if (f.isFile()) {
+                    try {
+                        scanner = new Scanner(
+                                new BufferedReader(
+                                        new FileReader(f)));
+                        String currentLine;
+                        String[] currentTokens;
+                        scanner.nextLine();//Skips scanning document headers
+                        while (scanner.hasNextLine()) {
+                            currentLine = scanner.nextLine();
+                            currentTokens = currentLine.split(DELIMITER);
+                            int num = Integer.parseInt(currentTokens[0]);
+                            lastNum = lastNum>num ? lastNum : num;
+                        }
+                        scanner.close();
+                        
+                    } catch (FileNotFoundException e) {
+                        throw new DataPersistenceException("Could not load order data into memory.", e);
+                    }
+                }
+                else {
+                	throw new DataPersistenceException("Incorrect directory file path.");
+                }
+		
+            }
+        }
+        return lastNum+1;
+	}
+	
+    private List<Order> loadOrdersByDate(LocalDate chosenDate) throws DataPersistenceException {
         //Loads one file for a specific date
         Scanner scanner;
-        String fileDate = chosenDate.format(DateTimeFormatter.ofPattern("YYYY-MM-DD"));
+        String fileDate = chosenDate.format(DateTimeFormatter.ofPattern("MMddyyyy"));
 
-        File f = new File(String.format(this.ORDER_FILE + "Orders_%s.txt", fileDate));
+        File f = new File(this.ORDER_FILE + "Orders_"+fileDate+".txt");
 
         List<Order> orders = new ArrayList<>();
 
@@ -65,7 +107,7 @@ public class OrderDaoImpl implements OrderDao {
                                 new FileReader(f)));
             } catch (FileNotFoundException e) {
                 throw new DataPersistenceException(
-                        "-_- Could not load order data into memory.", e);
+                        "Could not load order data into memory.", e);
             }
             String currentLine;
             String[] currentTokens;

@@ -3,7 +3,10 @@ package view;
 import java.math.BigDecimal;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserIOImpl implements UserIO {
 	private final Scanner sc = new Scanner(System.in);
@@ -18,24 +21,39 @@ public class UserIOImpl implements UserIO {
 		return null;
 	}
 
-	public String readString(String prompt) {
-		// TODO Auto-generated method stub
-		return null;
+	public String readString() {	
+        String string = null;
+        boolean validInput = true;
+        do {
+            String stringInput= sc.nextLine();
+            Pattern p = Pattern.compile("[a-zA-Z0-9\\s]+"); //Regex
+            Matcher m = p.matcher(stringInput);
+            if(m.matches() && !stringInput.isBlank()) {
+            	string=stringInput;
+            	validInput = true;
+            }
+            else {
+            	this.print("Please only enter words");
+            	validInput = false;
+            }
+        } while(!validInput);
+        return string;
 	}
 
-	public String readString(String prompt, int max) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public BigDecimal readBigDecimal(String prompt, int scale) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public BigDecimal readBigDecimal(String prompt, int scale, BigDecimal min) {
-		// TODO Auto-generated method stub
-		return null;
+	public BigDecimal readBigDecimal() {
+        boolean invalidInput = true;
+        BigDecimal decimal = new BigDecimal("0.0");
+        while (invalidInput) {
+            try {
+            	String stringValue = sc.nextLine();
+            	decimal = new BigDecimal(stringValue);
+            	invalidInput=false;
+                
+            } catch (NumberFormatException e) {
+                this.print("Input error. Please try again.");
+            }
+        }
+        return decimal;
 	}
 
 	public int readInt() {
@@ -65,7 +83,8 @@ public class UserIOImpl implements UserIO {
         do {
             try {
                 String stringInput= sc.nextLine();
-                date = LocalDate.parse(stringInput); 
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMddyyyy");
+                date = LocalDate.parse(stringInput,formatter); 
                 validInput = true;
             } catch (DateTimeException e) {
                 this.print("Input error. Date is not in the correct format");
