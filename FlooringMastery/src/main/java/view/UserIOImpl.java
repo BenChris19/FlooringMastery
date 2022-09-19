@@ -32,7 +32,7 @@ public class UserIOImpl implements UserIO {
             String stringInput= sc.nextLine();
             Pattern p = Pattern.compile("[a-zA-Z0-9\\s]+"); //Regex
             Matcher m = p.matcher(stringInput);
-            if(m.matches() && !stringInput.isBlank()) {
+            if(m.matches() || stringInput.equals("")) {
             	string=stringInput;
             	validInput = true;
             }
@@ -52,6 +52,27 @@ public class UserIOImpl implements UserIO {
             	String stringValue = sc.nextLine();
             	decimal = new BigDecimal(stringValue);
             	invalidInput=false;
+                
+            } catch (NumberFormatException e) {
+                this.print("Input error. Please try again.");
+            }
+        }
+        return decimal;
+	}
+	public BigDecimal readBigDecimal(String decimalOriginal) {
+        boolean invalidInput = true;
+        BigDecimal decimal = new BigDecimal("0.0");
+        while (invalidInput) {
+            try {
+            	String stringValue = sc.nextLine();
+            	if(stringValue.equals("")) {
+            		decimal = new BigDecimal(decimalOriginal);
+            		invalidInput=false;
+            	}
+            	else {
+            		decimal = new BigDecimal(stringValue);
+            		invalidInput=false;
+            	}
                 
             } catch (NumberFormatException e) {
                 this.print("Input error. Please try again.");
@@ -117,6 +138,44 @@ public class UserIOImpl implements UserIO {
 			}
 		}
 		return foundState;
+	}
+
+	@Override
+	public String readCustomerName(String customerName) {
+        String string = customerName;
+        boolean validInput = true;
+        do {
+            String stringInput= sc.nextLine();
+            Pattern p = Pattern.compile("[a-zA-Z0-9\\s]+"); //Regex
+            Matcher m = p.matcher(stringInput);
+            if(m.matches() || stringInput.equals("")) {
+            	string=stringInput;
+            	validInput = true;
+            }
+            else {
+            	this.print("Please only enter suitable characters");
+            	validInput = false;
+            }
+        } while(!validInput);
+        return string;
+	}
+
+	@Override
+	public String readYesNo() {
+        String string = null;
+        boolean validInput = true;
+        do {
+            String stringInput= sc.nextLine();
+            if(stringInput.equals("Y") || stringInput.equals("N")) {
+            	string=stringInput;
+            	validInput = true;
+            }
+            else {
+            	this.print("Please enter Y or N");
+            	validInput = false;
+            }
+        } while(!validInput);
+        return string;
 	}
 
 }

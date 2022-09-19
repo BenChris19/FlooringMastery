@@ -16,6 +16,8 @@ public interface UserIO {
     String readString();
 
     BigDecimal readBigDecimal();
+    
+    BigDecimal readBigDecimal(String decimalOriginal);
 
     int readInt();
 
@@ -24,4 +26,8 @@ public interface UserIO {
     Product readProduct(List<Product> products, String productName);
     
     State readState(List<State> states, String stateNameAbr);
+    
+    String readCustomerName(String customerName);
+    
+    String readYesNo();
 }

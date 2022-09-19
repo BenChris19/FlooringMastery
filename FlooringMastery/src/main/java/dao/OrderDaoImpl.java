@@ -165,7 +165,8 @@ public class OrderDaoImpl implements OrderDao {
 			throw new OrderValidationException("Could not save Order data", e);
 		}
 		
-		String OrderAsText= order.getOrderNumber() + DELIMITER;
+		String OrderAsText="OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total";
+		OrderAsText += order.getOrderNumber() + DELIMITER;
 		OrderAsText += order.getCustomerName() + DELIMITER;
 		OrderAsText += order.getState() + DELIMITER;
 		OrderAsText += order.getTaxRate() + DELIMITER;

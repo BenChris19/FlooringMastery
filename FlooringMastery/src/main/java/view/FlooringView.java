@@ -2,9 +2,8 @@ package view;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +81,7 @@ public class FlooringView {
 		
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Please enter Customer name");
-		String name = io.readString();
+		String name = io.readCustomerName(null);
 		
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Please enter state name or state abbreviation");
@@ -122,8 +121,115 @@ public class FlooringView {
         order.setLaborCost(laborCost);
         order.setTax(tax);
         order.setTotal(total);
+        
+        List<Order> temp = new ArrayList<>();
+        temp.add(order);
+        
+        this.displayOrdersOfDate(temp);
 		
 		return order;
 	}
+	public String displayConfirmOrder() {
+		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+		io.print("Do you want to place order? (Y/N)");
+		return io.readYesNo();
+	}
+	public String diplayConfirmEditOrder() {
+		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+		io.print("Are you sure you want to edit order? (Y/N)");
+		return io.readYesNo();		
+	}
+	
+	public LocalDate displayEditOrderDate() {
+		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+		io.print("Please enter date of the order you want to edit");
+		return io.readDate();
+	}
+	
+	public int displayEditOrderNum() {
+		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+		io.print("Please enter order number");
+		return io.readInt();
+	}
+	
+	public void displayEditOrderFoundSuccess() {
+		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+		io.print("Order date and number found");		
+	}
+	
+	public String displayEditCustomerName(List<Order> orders, int orderNum) {
+		String editName = null;
+		for(Order o:orders) {
+			if(o.getOrderNumber() == orderNum) {
+				io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+				io.print("Enter customer name ("+ o.getCustomerName()+"):");
+				editName = io.readCustomerName(o.getCustomerName());
+			}
+		}
+		return editName;
+	}
+	
+	public State displayEditCustomerState(List<Order> orders, List<State> states, int orderNum) {
+		State editState = null;
+		for(Order o:orders) {
+			if(o.getOrderNumber() == orderNum) {
+				io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+				io.print("Enter state name or abreviation ("+ o.getState()+"):");
+				String nameAbr = io.readString();
+				editState = io.readState(states, nameAbr);
+			}		
+		}
+		if(editState==null) {
+			State originalState = null;
+			for(State state:states) {
+				for(Order o:orders) {
+					if(state.getStateAbbreviation().equalsIgnoreCase(o.getState())) {
+						originalState = state;
+					}
+				}
+			}
+			return originalState;
+		}
+		else {
+			return editState;
+		}
+	}
 
+	public Product displayEditProductType(List<Order> orders,List<Product> products,int orderNum) {
+		Product editProduct = null;
+		for(Order o:orders) {
+			if(o.getOrderNumber() == orderNum) {
+				io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+				io.print("Enter product type ("+ o.getProductType()+"):");
+				String productType = io.readString();
+				editProduct = io.readProduct(products, productType);
+			}		
+		}
+		if(editProduct==null) {
+			Product originalProduct = null;
+			for(Product product:products) {
+				for(Order o:orders) {
+					if(product.getProductType().equalsIgnoreCase(o.getProductType())) {
+						originalProduct = product;
+					}
+				}
+			}
+			return originalProduct;
+		}
+		else {
+			return editProduct;
+		}
+	}
+
+	public BigDecimal displayEditArea(List<Order> orders, int orderNum) {
+		BigDecimal editArea = null;
+		for(Order o:orders) {
+			if(o.getOrderNumber() == orderNum) {
+				io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+				io.print("Enter area ("+ o.getArea()+"):");
+				editArea = io.readBigDecimal(o.getArea().toString());
+			}
+		}
+		return editArea;
+	}
 }

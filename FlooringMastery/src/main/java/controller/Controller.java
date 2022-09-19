@@ -1,12 +1,16 @@
 package controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import dao.DataPersistenceException;
 import model.Order;
+import model.Product;
+import model.State;
 import service.FloorService;
 import service.InvalidOrderNumberException;
 import service.OrderValidationException;
@@ -74,11 +78,56 @@ public class Controller {
 
 	private void addOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
 		Order newOrder = view.displayAddOrder(this.service.getAllProducts(), this.service.getAllStates(), this.service.getLastOrderNumber());
-		this.service.addOrder(newOrder);
+		if(view.displayConfirmOrder().equals("Y")){
+			this.service.addOrder(newOrder);
+		}
 	}
 
-	private void editOrder() {
-		// TODO Auto-generated method stub
+	private void editOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
+		LocalDate editDate = view.displayEditOrderDate();
+		int editOrderNum = view.displayEditOrderNum();
+		this.service.editOrderExists(editDate, editOrderNum);
+		List<Order> orderDate = this.service.getOrders(editDate);
+		view.displayEditOrderFoundSuccess();
+		
+		String customerName = view.displayEditCustomerName(orderDate, editOrderNum);
+		State state = view.displayEditCustomerState(orderDate, this.service.getAllStates(), editOrderNum);
+		BigDecimal taxRate = state.getTaxRate();
+		Product product = view.displayEditProductType(orderDate, this.service.getAllProducts(),editOrderNum);
+		BigDecimal area = view.displayEditArea(orderDate, editOrderNum);
+		
+		
+		Order t = new Order();
+		for(Order o: orderDate) {
+			if(o.getOrderNumber()==editOrderNum) {
+				t=o;
+			}
+		}
+		BigDecimal materialCost = area.multiply(t.getCostPerSquareFoot());
+		BigDecimal laborCost = area.multiply(t.getLaborCostPerSquareFoot());
+		BigDecimal tax = materialCost.add(laborCost).multiply(state.getTaxRate().divide(new BigDecimal("100")));
+		BigDecimal total = materialCost.add(laborCost.add(tax));
+		if(view.diplayConfirmEditOrder().equals("Y")){
+			Order order = new Order();
+	        order.setDate(t.getDate());
+	        order.setOrderNumber(editOrderNum);
+	        order.setCustomerName(customerName);
+	        order.setState(state.getStateAbbreviation());
+	        order.setTaxRate(state.getTaxRate());
+	        order.setProductType(product.getProductType());
+	        order.setArea(area);
+	        order.setCostPerSquareFoot(t.getCostPerSquareFoot());
+	        order.setLaborCostPerSquareFoot(t.getLaborCostPerSquareFoot());
+	        order.setMaterialCost(materialCost);
+	        order.setLaborCost(laborCost);
+	        order.setTax(tax);
+	        order.setTotal(total);
+	        
+	      //  this.service.editOrderExists(order,t.getDate(),editOrderNum);
+		}
+//		this.service.editOrder(editOrder, editOrderNum);
+				
+		
 		
 	}
 

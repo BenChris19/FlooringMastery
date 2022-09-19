@@ -1,1 +1,2 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
 4,Barack Obama,TX,4.45,Wood,24.5,5.15,4.75,24.46,116.4,6.268270,147.128270,

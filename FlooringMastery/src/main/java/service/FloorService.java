@@ -33,8 +33,8 @@ public interface FloorService {
     throws DataPersistenceException, StateValidationException,
     ProductValidationException;
 
-    Order editOrder(Order updatedOrder) throws DataPersistenceException,
-    InvalidOrderNumberException;
+    void editOrderExists(LocalDate date, int orderNum) throws DataPersistenceException,
+    InvalidOrderNumberException, OrderValidationException;
 
     Order removeOrder(Order removedOrder) throws DataPersistenceException,
     InvalidOrderNumberException;

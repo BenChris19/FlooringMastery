@@ -93,9 +93,28 @@ public class FloorServiceImpl implements FloorService{
 		return null;
 	}
 
-	public Order editOrder(Order updatedOrder) throws DataPersistenceException, InvalidOrderNumberException {
-		// TODO Auto-generated method stub
-		return null;
+	public void editOrderExists(LocalDate date, int orderNum) throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
+		Order editOrder = null;
+		boolean found=false;
+        List<Order> ordersByDate = orderDao.getOrders(date);
+        if (!ordersByDate.isEmpty()) {
+        	for(Order o:ordersByDate) {
+        		if(o.getOrderNumber()==orderNum) {
+        			found=true;
+        			editOrder = o;
+        		}
+        	}
+        	if(found) {
+        		//editOrder = this.orderDao.editOrder(editOrder);
+        	}
+        	else {
+        		throw new OrderValidationException("No orders on that date");
+        	}
+        }
+        else {
+            throw new InvalidOrderNumberException("ERROR: No orders "
+                    + "exist on that date or ther are no order numbers on the specified date.");
+        }
 	}
 
 	public Order removeOrder(Order removedOrder) throws DataPersistenceException, InvalidOrderNumberException {
