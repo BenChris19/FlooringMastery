@@ -1,5 +1,6 @@
 package service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public interface FloorService {
     Order getOrder(LocalDate dateChoice, int orderNumber) throws
     DataPersistenceException, InvalidOrderNumberException;
 
-    Order addOrder(Order o) throws DataPersistenceException, OrderValidationException;
+    Order addOrder(Order o) throws DataPersistenceException, OrderValidationException, IOException;
 
     Order compareOrders(Order savedOrder, Order editedOrder)
     throws DataPersistenceException, StateValidationException,
@@ -35,8 +36,10 @@ public interface FloorService {
 
     void editOrderExists(LocalDate date, int orderNum) throws DataPersistenceException,
     InvalidOrderNumberException, OrderValidationException;
+    
+    Order editOrder(Order o) throws InvalidOrderNumberException, DataPersistenceException, OrderValidationException, IOException;
 
     Order removeOrder(Order removedOrder) throws DataPersistenceException,
-    InvalidOrderNumberException;
+    InvalidOrderNumberException, OrderValidationException;
 
 }

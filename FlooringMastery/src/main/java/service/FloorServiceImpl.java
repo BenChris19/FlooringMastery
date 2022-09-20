@@ -1,5 +1,6 @@
 package service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -76,7 +77,7 @@ public class FloorServiceImpl implements FloorService{
 		return null;
 	}
 
-	public Order addOrder(Order o) throws DataPersistenceException, OrderValidationException {
+	public Order addOrder(Order o) throws DataPersistenceException, OrderValidationException, IOException {
 		Order addOrder = null;
 		if(o!=null) {
 			addOrder = this.orderDao.addOrder(o);
@@ -117,8 +118,27 @@ public class FloorServiceImpl implements FloorService{
         }
 	}
 
-	public Order removeOrder(Order removedOrder) throws DataPersistenceException, InvalidOrderNumberException {
-		// TODO Auto-generated method stub
+	public Order removeOrder(Order removedOrder) throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
+		if(removedOrder!=null) {
+			this.orderDao.removeOrder(removedOrder);
+		}
+		else {
+            throw new InvalidOrderNumberException("ERROR: No orders "
+                    + "exist on that date or ther are no order numbers on the specified date.");			
+		}
+		return null;
+	}
+
+
+	@Override
+	public Order editOrder(Order o) throws InvalidOrderNumberException, DataPersistenceException, OrderValidationException, IOException {
+		if(o!=null) {
+			this.orderDao.editOrder(o);
+		}
+		else {
+            throw new InvalidOrderNumberException("ERROR: No orders "
+                    + "exist on that date or ther are no order numbers on the specified date.");			
+		}
 		return null;
 	}
 

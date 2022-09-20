@@ -200,6 +200,10 @@ public class FlooringView {
 		for(Order o:orders) {
 			if(o.getOrderNumber() == orderNum) {
 				io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+				io.print("Choose one of the following product type");
+				products.forEach(p->{io.print("---Product type: "+p.getProductType());
+				 io.print("---Cost per square foot: "+p.getCostPerSquareFoot());
+				 io.print("---Labor cost per square foot"+p.getLaborCostPerSquareFoot()+"\n");});
 				io.print("Enter product type ("+ o.getProductType()+"):");
 				String productType = io.readString();
 				editProduct = io.readProduct(products, productType);
@@ -231,5 +235,23 @@ public class FlooringView {
 			}
 		}
 		return editArea;
+	}
+	
+	public LocalDate displayRemoveOrderDate() {
+		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+		io.print("Please enter date you want to remove");
+		return io.readDate();
+	}
+	
+	public int displayRemoveOrderNumber() {
+		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+		io.print("Please enter order number you want to remove");
+		return io.readInt();
+	}
+	
+	public String diplayConfirmRemoveOrder() {
+		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+		io.print("Are you sure you want to remove order? (Y/N)");
+		return io.readYesNo();		
 	}
 }

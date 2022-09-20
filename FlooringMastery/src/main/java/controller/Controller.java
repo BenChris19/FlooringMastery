@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +29,7 @@ public class Controller {
 		this.service = service;
 	}
 	
-	public void run() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
+	public void run() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException, IOException {
 		boolean keepGoing = true;
         int menuSelection = 0;
         while (keepGoing) {
@@ -76,14 +77,14 @@ public class Controller {
 		view.displayOrdersOfDate(service.getOrders(date));
 	}
 
-	private void addOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
+	private void addOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException, IOException {
 		Order newOrder = view.displayAddOrder(this.service.getAllProducts(), this.service.getAllStates(), this.service.getLastOrderNumber());
 		if(view.displayConfirmOrder().equals("Y")){
 			this.service.addOrder(newOrder);
 		}
 	}
 
-	private void editOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
+	private void editOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException, IOException {
 		LocalDate editDate = view.displayEditOrderDate();
 		int editOrderNum = view.displayEditOrderNum();
 		this.service.editOrderExists(editDate, editOrderNum);
@@ -123,16 +124,29 @@ public class Controller {
 	        order.setTax(tax);
 	        order.setTotal(total);
 	        
-	      //  this.service.editOrderExists(order,t.getDate(),editOrderNum);
+	        this.service.editOrder(order);
 		}
-//		this.service.editOrder(editOrder, editOrderNum);
 				
 		
 		
 	}
 
-	private void removeOrder() {
-		// TODO Auto-generated method stub
+	private void removeOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
+		LocalDate removeDate = view.displayRemoveOrderDate();
+		int removeOrderNum = view.displayRemoveOrderNumber();
+		Order removeOrder = null;
+		this.service.editOrderExists(removeDate, removeOrderNum);
+		List<Order> orderDate = this.service.getOrders(removeDate);
+		for(Order o: orderDate) {
+			if(o.getOrderNumber()==removeOrderNum) {
+				removeOrder = o;
+			}
+		}
+		view.displayEditOrderFoundSuccess();
+		
+		if(view.diplayConfirmRemoveOrder().equals("Y")) {
+			this.service.removeOrder(removeOrder);
+		}
 		
 	}
 

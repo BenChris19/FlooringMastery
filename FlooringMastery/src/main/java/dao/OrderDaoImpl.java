@@ -23,6 +23,7 @@ public class OrderDaoImpl implements OrderDao {
 	
     private int lastOrderNumber;
     private Map<Integer, Order> orders = new HashMap<>();
+    private Map<Integer,Order> ordersByDate = new HashMap<>();
     
     private final String HEADER = "OrderNumber,CustomerName,State,TaxRate,ProductType,"
     		+ "Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total";
@@ -48,18 +49,22 @@ public class OrderDaoImpl implements OrderDao {
 	public Order addOrder(Order o) throws DataPersistenceException, OrderValidationException {
 		this.loadAllOrders();
 		Order order = this.orders.put(o.getOrderNumber(), o);
-		writeOrder(o);
+		writeOrder(o,new ArrayList<>(this.ordersByDate.values()));
 		return order;
 	}
 
-	public Order editOrder(Order editedOrder) throws DataPersistenceException {
-		// TODO Auto-generated method stub
-		return null;
+	public Order editOrder(Order editedOrder) throws DataPersistenceException, OrderValidationException {
+		this.loadOrdersByDate(editedOrder.getDate());
+		Order order=this.ordersByDate.replace(editedOrder.getOrderNumber(), editedOrder);
+		writeOrder(editedOrder,new ArrayList<>(this.ordersByDate.values()));
+		return order;
 	}
 
-	public Order removeOrder(Order o) throws DataPersistenceException {
-		// TODO Auto-generated method stub
-		return null;
+	public Order removeOrder(Order o) throws DataPersistenceException, OrderValidationException {
+		this.loadOrdersByDate(o.getDate());
+		Order order=this.ordersByDate.remove(o.getOrderNumber());
+		writeOrder(o,new ArrayList<>(this.ordersByDate.values()));
+		return order;
 	}
 	
 	private void loadAllOrders() throws DataPersistenceException {
@@ -153,7 +158,7 @@ public class OrderDaoImpl implements OrderDao {
         return lastNum+1;
 	}
 	
-	private void writeOrder(Order order) throws OrderValidationException{
+	private void writeOrder(Order order, List<Order> orders) throws OrderValidationException, DataPersistenceException{
 		PrintWriter out;
 		File file;
 		
@@ -165,21 +170,25 @@ public class OrderDaoImpl implements OrderDao {
 			throw new OrderValidationException("Could not save Order data", e);
 		}
 		
-		String OrderAsText="OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total";
-		OrderAsText += order.getOrderNumber() + DELIMITER;
-		OrderAsText += order.getCustomerName() + DELIMITER;
-		OrderAsText += order.getState() + DELIMITER;
-		OrderAsText += order.getTaxRate() + DELIMITER;
-		OrderAsText += order.getProductType() + DELIMITER;
-		OrderAsText += order.getArea() + DELIMITER;
-		OrderAsText += order.getCostPerSquareFoot() + DELIMITER;
-		OrderAsText += order.getLaborCostPerSquareFoot() + DELIMITER;
-		OrderAsText += order.getMaterialCost() + DELIMITER;
-		OrderAsText += order.getLaborCost() + DELIMITER;
-		OrderAsText += order.getTax() + DELIMITER;
-		OrderAsText += order.getTotal() + DELIMITER;
-			out.println(OrderAsText);
-			out.flush();
+		//orderList.add(order);
+		
+		String OrderAsText="OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total\n";
+		for(Order o:orders) {
+			OrderAsText += o.getOrderNumber() + DELIMITER;
+			OrderAsText += o.getCustomerName() + DELIMITER;
+			OrderAsText += o.getState() + DELIMITER;
+			OrderAsText += o.getTaxRate() + DELIMITER;
+			OrderAsText += o.getProductType() + DELIMITER;
+			OrderAsText += o.getArea() + DELIMITER;
+			OrderAsText += o.getCostPerSquareFoot() + DELIMITER;
+			OrderAsText += o.getLaborCostPerSquareFoot() + DELIMITER;
+			OrderAsText += o.getMaterialCost() + DELIMITER;
+			OrderAsText += o.getLaborCost() + DELIMITER;
+			OrderAsText += o.getTax() + DELIMITER;
+			OrderAsText += o.getTotal() + DELIMITER;
+				out.println(OrderAsText);
+				out.flush();			
+		}
 		out.close();
 	}
 	
@@ -189,8 +198,6 @@ public class OrderDaoImpl implements OrderDao {
         String fileDate = chosenDate.format(DateTimeFormatter.ofPattern("MMddyyyy"));
 
         File f = new File(this.ORDER_FILE + "Orders_"+fileDate+".txt");
-
-        List<Order> orders = new ArrayList<>();
 
         if (f.isFile()) {
             try {
@@ -223,17 +230,73 @@ public class OrderDaoImpl implements OrderDao {
                     currentOrder.setLaborCost(new BigDecimal(currentTokens[9]));
                     currentOrder.setTax(new BigDecimal(currentTokens[10]));
                     currentOrder.setTotal(new BigDecimal(currentTokens[11]));
-                    orders.add(currentOrder);
+                    this.ordersByDate.put(currentOrder.getOrderNumber(), currentOrder);
                 } else {
                     //Ignore line.
                 }
             }
             scanner.close();
-            return orders;
+            return new ArrayList<Order>(this.ordersByDate.values());
         } else {
-            return orders;
+            return new ArrayList<Order>(this.ordersByDate.values());
         }
     }
+    
+//	private void writeOrder(Order order) throws OrderValidationException, DataPersistenceException, IOException{
+//		
+//		Scanner scanner;
+//		String OrderAsText = null;
+//		
+//		PrintWriter out;
+//		File file= new File(this.ORDER_FILE);
+//		File[] directoryListing = file.listFiles();
+//		if (directoryListing != null) {
+//			for (File f : directoryListing) {
+//				if (f.getName().equals(this.ORDER_FILE+"Orders_"+order.getDate().format(DateTimeFormatter.ofPattern("MMddyyyy"))+".txt")) {
+//                    try {
+//                        scanner = new Scanner(
+//                                new BufferedReader(
+//                                        new FileReader(f)));
+//                        
+//                    } catch (FileNotFoundException e) {
+//                        throw new DataPersistenceException("Could not load order data into memory.", e);
+//                    }					
+//				}
+//				else {
+//					try {
+//						file = new File(this.ORDER_FILE+"Orders_"+order.getDate().format(DateTimeFormatter.ofPattern("MMddyyyy"))+".txt");
+//						OrderAsText="OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total";
+//					}
+//					catch(Exception e) {
+//						throw new OrderValidationException("Could not save Order data", e);
+//					}					
+//				}
+//			}
+//		}
+//		
+//		List<Order> orderList = this.getOrders(order.getDate());
+//		orderList.add(order);
+//		out = new PrintWriter(new FileWriter(file.getAbsolutePath()));
+//		
+//		
+//		for(Order o:orderList) {
+//			OrderAsText += o.getOrderNumber() + DELIMITER;
+//			OrderAsText += o.getCustomerName() + DELIMITER;
+//			OrderAsText += o.getState() + DELIMITER;
+//			OrderAsText += o.getTaxRate() + DELIMITER;
+//			OrderAsText += o.getProductType() + DELIMITER;
+//			OrderAsText += o.getArea() + DELIMITER;
+//			OrderAsText += o.getCostPerSquareFoot() + DELIMITER;
+//			OrderAsText += o.getLaborCostPerSquareFoot() + DELIMITER;
+//			OrderAsText += o.getMaterialCost() + DELIMITER;
+//			OrderAsText += o.getLaborCost() + DELIMITER;
+//			OrderAsText += o.getTax() + DELIMITER;
+//			OrderAsText += o.getTotal() + DELIMITER;
+//				out.println(OrderAsText);
+//				out.flush();			
+//		}
+//		out.close();
+//	}
 
 
 

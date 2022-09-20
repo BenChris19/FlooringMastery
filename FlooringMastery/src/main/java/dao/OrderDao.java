@@ -1,5 +1,6 @@
 package dao;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,9 +13,9 @@ public interface OrderDao {
     
     int getLastOrderNumber() throws DataPersistenceException;
 
-    Order addOrder(Order o) throws DataPersistenceException, OrderValidationException;
+    Order addOrder(Order o) throws DataPersistenceException, OrderValidationException, IOException;
 
-    Order editOrder(Order editedOrder) throws DataPersistenceException;
+    Order editOrder(Order editedOrder) throws DataPersistenceException, OrderValidationException, IOException;
 
-    Order removeOrder(Order o) throws DataPersistenceException;
+    Order removeOrder(Order o) throws DataPersistenceException, OrderValidationException;
 }
