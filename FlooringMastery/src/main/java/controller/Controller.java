@@ -51,16 +51,12 @@ public class Controller {
 		            break;
 		        case 5:
 		            keepGoing = false;
-		            break;
-		        case 6:
-		            keepGoing = false;
 		            exitProgramme();
 		            break;
 		        default:
 		            outOfBounds();
 		    }
 		}
-		exitMessage();
     }
 
 	private int getMenuSelection() {
@@ -152,11 +148,6 @@ public class Controller {
 
 	private void outOfBounds() {
 		view.displayInvalidOption();
-		
-	}
-
-	private void exitMessage() {
-		// TODO Auto-generated method stub
 		
 	}
 
