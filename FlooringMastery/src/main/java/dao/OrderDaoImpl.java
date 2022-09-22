@@ -47,8 +47,8 @@ public class OrderDaoImpl implements OrderDao {
 	}
 
 	public Order addOrder(Order o) throws DataPersistenceException, OrderValidationException {
-		this.loadAllOrders();
-		Order order = this.orders.put(o.getOrderNumber(), o);
+		this.loadOrdersByDate(o.getDate());
+		Order order = this.ordersByDate.put(o.getOrderNumber(), o);
 		writeOrder(o,new ArrayList<>(this.ordersByDate.values()));
 		return order;
 	}

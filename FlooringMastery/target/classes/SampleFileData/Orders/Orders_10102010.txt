@@ -1,0 +1,2 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
+5,Monster Inc 2,TX,4.45,Laminate,43.5,1.75,2.10,3.675,91.35,4.2286125,99.2536125,

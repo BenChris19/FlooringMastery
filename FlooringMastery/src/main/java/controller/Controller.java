@@ -106,7 +106,7 @@ public class Controller {
 		}
 		BigDecimal materialCost = area.multiply(t.getCostPerSquareFoot());
 		BigDecimal laborCost = area.multiply(t.getLaborCostPerSquareFoot());
-		BigDecimal tax = materialCost.add(laborCost).multiply(state.getTaxRate().divide(new BigDecimal("100")));
+		BigDecimal tax = materialCost.add(laborCost).multiply(taxRate.divide(new BigDecimal("100")));
 		BigDecimal total = materialCost.add(laborCost.add(tax));
 		if(view.diplayConfirmEditOrder().equals("Y")){
 			Order order = new Order();
