@@ -7,6 +7,11 @@ import java.util.List;
 import model.Order;
 import service.OrderValidationException;
 
+/**
+ * Interface for order dao
+ * @author benat
+ *
+ */
 public interface OrderDao {
 
     List<Order> getOrders(LocalDate dateChoice) throws DataPersistenceException;

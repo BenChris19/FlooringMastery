@@ -13,10 +13,16 @@ import model.Order;
 import model.Product;
 import model.State;
 import service.FloorService;
+import service.InvalidDateException;
 import service.InvalidOrderNumberException;
 import service.OrderValidationException;
 import view.FlooringView;
 
+/**
+ * Controller class for flooring mastery
+ * @author benat
+ *
+ */
 @Component
 public class Controller {
 	
@@ -24,12 +30,25 @@ public class Controller {
 	private FlooringView view;
 	private FloorService service;
 	
+	/**
+	 * Constructor for controller
+	 * @param service
+	 * @param view
+	 */
 	public Controller(FloorService service, FlooringView view) {
 		this.view = view;
 		this.service = service;
 	}
 	
-	public void run() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException, IOException {
+	/**
+	 * Run the program
+	 * @throws DataPersistenceException
+	 * @throws InvalidOrderNumberException
+	 * @throws OrderValidationException
+	 * @throws IOException
+	 * @throws InvalidDateException
+	 */
+	public void run() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException, IOException, InvalidDateException {
 		boolean keepGoing = true;
         int menuSelection = 0;
         while (keepGoing) {
@@ -59,20 +78,40 @@ public class Controller {
 		}
     }
 
+	/**
+	 * Get the menu selection and prompt to the user
+	 * @return
+	 */
 	private int getMenuSelection() {
 		return view.displayMenu();
 	}
 	
+	/**
+	 * Exit the programme
+	 */
 	private void exitProgramme() {
 		view.displayEndOfProgramme();
 		
 	}
 
-	private void getOrders() throws InvalidOrderNumberException, DataPersistenceException {
+	/**
+	 * Get all of the orders
+	 * @throws InvalidOrderNumberException
+	 * @throws DataPersistenceException
+	 * @throws InvalidDateException
+	 */
+	private void getOrders() throws InvalidOrderNumberException, DataPersistenceException, InvalidDateException {
 		LocalDate date = view.displayGetOrders();
 		view.displayOrdersOfDate(service.getOrders(date));
 	}
 
+	/**
+	 * Add order to the file
+	 * @throws DataPersistenceException
+	 * @throws InvalidOrderNumberException
+	 * @throws OrderValidationException
+	 * @throws IOException
+	 */
 	private void addOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException, IOException {
 		Order newOrder = view.displayAddOrder(this.service.getAllProducts(), this.service.getAllStates(), this.service.getLastOrderNumber());
 		if(view.displayConfirmOrder().equals("Y")){
@@ -80,7 +119,15 @@ public class Controller {
 		}
 	}
 
-	private void editOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException, IOException {
+	/**
+	 * Edit the order
+	 * @throws DataPersistenceException
+	 * @throws InvalidOrderNumberException
+	 * @throws OrderValidationException
+	 * @throws IOException
+	 * @throws InvalidDateException
+	 */
+	private void editOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException, IOException, InvalidDateException {
 		LocalDate editDate = view.displayEditOrderDate();
 		int editOrderNum = view.displayEditOrderNum();
 		this.service.editOrderExists(editDate, editOrderNum);
@@ -122,12 +169,16 @@ public class Controller {
 	        
 	        this.service.editOrder(order);
 		}
-				
-		
-		
 	}
 
-	private void removeOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
+	/**
+	 * Remove order from file
+	 * @throws DataPersistenceException
+	 * @throws InvalidOrderNumberException
+	 * @throws OrderValidationException
+	 * @throws InvalidDateException
+	 */
+	private void removeOrder() throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException, InvalidDateException {
 		LocalDate removeDate = view.displayRemoveOrderDate();
 		int removeOrderNum = view.displayRemoveOrderNumber();
 		Order removeOrder = null;
@@ -146,6 +197,9 @@ public class Controller {
 		
 	}
 
+	/**
+	 * Display out of bounds if user enters an option not in the menu
+	 */
 	private void outOfBounds() {
 		view.displayInvalidOption();
 		

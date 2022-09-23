@@ -8,6 +8,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
+/**
+ * Order class with all values from the .txt file
+ * @author benat
+ *
+ */
 public class Order {
 	private LocalDate date;
 	private int orderNumber;
@@ -23,6 +28,9 @@ public class Order {
 	private BigDecimal tax;
 	private BigDecimal total;
 	
+	/**
+	 * Constructor for order
+	 */
 	public Order() {
 		
 	}

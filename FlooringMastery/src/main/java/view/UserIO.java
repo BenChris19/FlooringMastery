@@ -7,11 +7,14 @@ import model.State;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Interface for user io
+ * @author benat
+ *
+ */
 public interface UserIO {
 
     void print(String prompt);
-
-    String formatCurrency(BigDecimal amount);
 
     String readString();
 

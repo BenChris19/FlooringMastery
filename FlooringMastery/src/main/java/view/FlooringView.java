@@ -14,17 +14,29 @@ import model.Product;
 import model.State;
 
 
-
+/**
+ * View the user has for the flooring application
+ * @author benat
+ *
+ */
 @Component
 public class FlooringView {
 	
 	@Autowired
 	private UserIO io;
 	
+	/**
+	 * Dependency injection
+	 * @param io
+	 */
 	public FlooringView(UserIO io) {
 		this.io = io;
 	}
 	
+	/**
+	 * Display the menu to the user
+	 * @return
+	 */
 	public int displayMenu() {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
         io.print("*<<Flooring Program>>");
@@ -39,22 +51,36 @@ public class FlooringView {
         return io.readInt();		
 	}
 	
+	/**
+	 * Display the user for invalid option
+	 */
 	public void displayInvalidOption() {
 		io.print("Please enter a number between 1 and 6!");
 	}
 	
+	/**
+	 * Display the end of programme
+	 */
 	public void displayEndOfProgramme() {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("* * * * * *END OF PROGRAMME!* * * * * *");
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 	}
 	
+	/**
+	 * Display the date the user has to enter to get orders from that date
+	 * @return
+	 */
 	public LocalDate displayGetOrders() {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Please enter a date in the format MMDDYYYY");
 		return io.readDate();
 	}
 	
+	/**
+	 * Display all orders for a particular date
+	 * @param orders
+	 */
 	public void displayOrdersOfDate(List<Order> orders) {
 		io.print("* * * * * * * * * * * * * * * * *Date:"+orders.get(0).getDate()+"* * * * * * * * * * * * * * * * * *");
 		orders.forEach(o->{
@@ -73,6 +99,13 @@ public class FlooringView {
 		});
 	}
 	
+	/**
+	 * Display add an order and prompt the user with options to enter to create the order
+	 * @param products
+	 * @param states
+	 * @param lastOrder
+	 * @return
+	 */
 	public Order displayAddOrder(List<Product> products, List<State> states, int lastOrder) {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Please enter a future date in the formate MMDDYYYY");
@@ -128,34 +161,61 @@ public class FlooringView {
 		
 		return order;
 	}
+	
+	/**
+	 * Display the user with order confirmation
+	 * @return
+	 */
 	public String displayConfirmOrder() {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Do you want to place order? (Y/N)");
 		return io.readYesNo();
 	}
+	
+	/**
+	 * Display the user if they are sure they want to edit the order
+	 * @return
+	 */
 	public String diplayConfirmEditOrder() {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Are you sure you want to edit order? (Y/N)");
 		return io.readYesNo();		
 	}
 	
+	/**
+	 * Display the user with the date they want to edit the order
+	 * @return
+	 */
 	public LocalDate displayEditOrderDate() {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Please enter date of the order you want to edit");
 		return io.readDate();
 	}
 	
+	/**
+	 * Display the user with the order number they want to edit
+	 * @return
+	 */
 	public int displayEditOrderNum() {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Please enter order number");
 		return io.readInt();
 	}
 	
+	/**
+	 * Display success if the order was found
+	 */
 	public void displayEditOrderFoundSuccess() {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Order date and number found");		
 	}
 	
+	/**
+	 * Display edit customer name
+	 * @param orders
+	 * @param orderNum
+	 * @return
+	 */
 	public String displayEditCustomerName(List<Order> orders, int orderNum) {
 		String editName = null;
 		for(Order o:orders) {
@@ -168,6 +228,13 @@ public class FlooringView {
 		return editName;
 	}
 	
+	/**
+	 * Display edit customer state
+	 * @param orders
+	 * @param states
+	 * @param orderNum
+	 * @return
+	 */
 	public State displayEditCustomerState(List<Order> orders, List<State> states, int orderNum) {
 		State editState = null;
 		for(Order o:orders) {
@@ -194,6 +261,13 @@ public class FlooringView {
 		}
 	}
 
+	/**
+	 * Display customer with edit product type
+	 * @param orders
+	 * @param products
+	 * @param orderNum
+	 * @return
+	 */
 	public Product displayEditProductType(List<Order> orders,List<Product> products,int orderNum) {
 		Product editProduct = null;
 		for(Order o:orders) {
@@ -224,6 +298,12 @@ public class FlooringView {
 		}
 	}
 
+	/**
+	 * Display edit area of floor.
+	 * @param orders
+	 * @param orderNum
+	 * @return
+	 */
 	public BigDecimal displayEditArea(List<Order> orders, int orderNum) {
 		BigDecimal editArea = null;
 		for(Order o:orders) {
@@ -236,18 +316,29 @@ public class FlooringView {
 		return editArea;
 	}
 	
+	/**
+	 * Prompt the user with a date to enter to remove an order
+	 * @return
+	 */
 	public LocalDate displayRemoveOrderDate() {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Please enter date you want to remove");
 		return io.readDate();
 	}
 	
+	/**
+	 * Prompt the user with the order number to remove an order
+	 * @return
+	 */
 	public int displayRemoveOrderNumber() {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Please enter order number you want to remove");
 		return io.readInt();
 	}
 	
+	/**
+	 * Display to the user to confirm that the order has been removed
+	 */
 	public String diplayConfirmRemoveOrder() {
 		io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
 		io.print("Are you sure you want to remove order? (Y/N)");

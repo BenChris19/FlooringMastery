@@ -8,33 +8,49 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import model.Product;
 import model.State;
 
+/**
+ * Implements state dao implementation
+ * @author benat
+ *
+ */
 public class StateDaoImpl implements StateDao{
 	
-    private final String HEADER = "State,StateName,TaxRate";
     private final String DELIMITER = ",";
     private final String TAX_FILE;
     
     private List<State> allStates = new ArrayList<>();
     
+    /**
+     * Constructor for state implmentation with file path specified
+     */
     public StateDaoImpl() {
     	this.TAX_FILE="src/main/resources/SampleFileData/Data/Taxes.txt";
     }
 
+    /**
+     * Constructor for state dao implementation, user specifies file path
+     * @param filePath
+     */
     public StateDaoImpl(String filePath) {
         this.TAX_FILE=filePath;
     }
 
+    /**
+     * Get all states from the state.txt file
+     */
 	@Override
 	public List<State> getAllStates() throws DataPersistenceException {
 		loadTaxes();
 		return this.allStates;
 	}
 	
+	/**
+	 * Load taxes from state file
+	 * @throws DataPersistenceException
+	 */
     private void loadTaxes() throws DataPersistenceException {
-        //Loads one file for a specific date
         Scanner sc;
 
 		try {
@@ -54,6 +70,11 @@ public class StateDaoImpl implements StateDao{
 		sc.close();
     }
     
+    /**
+     * Unmarshall state from text
+     * @param ItemAsText
+     * @return
+     */
 	private State unmarshallProduct(String ItemAsText) {
 		
 		String[] ItemAsElements = ItemAsText.split(DELIMITER);

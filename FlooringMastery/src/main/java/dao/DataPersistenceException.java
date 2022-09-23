@@ -1,5 +1,10 @@
 package dao;
 
+/**
+ * Throw data persistence exception
+ * @author benat
+ *
+ */
 @SuppressWarnings("serial")
 public class DataPersistenceException extends Exception {
 

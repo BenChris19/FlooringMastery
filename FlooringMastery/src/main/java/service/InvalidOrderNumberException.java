@@ -1,5 +1,10 @@
 package service;
 
+/**
+ * Invalid order number exception
+ * @author benat
+ *
+ */
 @SuppressWarnings("serial")
 public class InvalidOrderNumberException extends Exception {
 

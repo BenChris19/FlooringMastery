@@ -1,5 +1,10 @@
 package service;
 
+/**
+ * Order validation exception
+ * @author benat
+ *
+ */
 @SuppressWarnings("serial")
 public class OrderValidationException extends Exception {
 

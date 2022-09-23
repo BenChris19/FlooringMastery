@@ -10,11 +10,15 @@ import model.Product;
 import model.State;
 import dao.DataPersistenceException;
 
-
+/**
+ * Interface for service
+ * @author benat
+ *
+ */
 public interface FloorService {
 	
     List<Order> getOrders(LocalDate dateChoice) throws InvalidOrderNumberException,
-    DataPersistenceException;
+    DataPersistenceException, InvalidDateException;
     
     int getLastOrderNumber() throws DataPersistenceException;
     
@@ -22,17 +26,7 @@ public interface FloorService {
     
     List<State> getAllStates() throws DataPersistenceException;
 
-    Order calculateOrder(Order o) throws DataPersistenceException,
-    OrderValidationException, StateValidationException, ProductValidationException;
-
-    Order getOrder(LocalDate dateChoice, int orderNumber) throws
-    DataPersistenceException, InvalidOrderNumberException;
-
     Order addOrder(Order o) throws DataPersistenceException, OrderValidationException, IOException;
-
-    Order compareOrders(Order savedOrder, Order editedOrder)
-    throws DataPersistenceException, StateValidationException,
-    ProductValidationException;
 
     void editOrderExists(LocalDate date, int orderNum) throws DataPersistenceException,
     InvalidOrderNumberException, OrderValidationException;

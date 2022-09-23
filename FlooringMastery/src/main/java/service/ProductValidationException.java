@@ -1,5 +1,10 @@
 package service;
 
+/**
+ * Validate the product
+ * @author benat
+ *
+ */
 @SuppressWarnings("serial")
 public class ProductValidationException extends Exception {
 

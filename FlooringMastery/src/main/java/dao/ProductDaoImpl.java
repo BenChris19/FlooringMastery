@@ -15,28 +15,46 @@ import java.util.Scanner;
 import model.Order;
 import model.Product;
 
+/**
+ * Product dao implementation 
+ * @author benat
+ *
+ */
 public class ProductDaoImpl implements ProductDao{
 	
-    private final String HEADER = "ProductType,CostPerSquareFoot,LaborCostPerSquareFoot";
     private final String DELIMITER = ",";
     private final String PRODUCT_FILE;
     
     private List<Product> allProducts = new ArrayList<>();
     
+    /**
+     * Constructor for Product dao implementation
+     */
     public ProductDaoImpl() {
     	this.PRODUCT_FILE="src/main/resources/SampleFileData/Data/Products.txt";
     }
 
+    /**
+     * Product dao implemenattion with constructor
+     * @param filePath
+     */
     public ProductDaoImpl(String filePath) {
         this.PRODUCT_FILE = filePath;
     }
 
+    /**
+     * Get all products from the file
+     */
 	@Override
 	public List<Product> getAllProducts() throws DataPersistenceException {
 		loadProducts();
 		return this.allProducts;
 	}
 	
+	/**
+	 * Load product from Product.txt file
+	 * @throws DataPersistenceException
+	 */
     private void loadProducts() throws DataPersistenceException {
         //Loads one file for a specific date
         Scanner sc;
@@ -58,6 +76,11 @@ public class ProductDaoImpl implements ProductDao{
 		sc.close();
     }
     
+    /**
+     * Unmarshall product from textFile
+     * @param ItemAsText
+     * @return
+     */
 	private Product unmarshallProduct(String ItemAsText) {
 		
 		String[] ItemAsElements = ItemAsText.split(DELIMITER);

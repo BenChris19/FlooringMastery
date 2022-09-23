@@ -12,19 +12,25 @@ import java.util.regex.Pattern;
 import model.Product;
 import model.State;
 
+/**
+ * Implements userio
+ * @author benat
+ *
+ */
 public class UserIOImpl implements UserIO {
 	private final Scanner sc = new Scanner(System.in);
 
+	/**
+	 * Print message to user
+	 */
 	public void print(String msg) {
 		System.out.println(msg);
 		
 	}
 
-	public String formatCurrency(BigDecimal amount) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	/**
+	 * Read string from user
+	 */
 	public String readString() {	
         String string = null;
         boolean validInput = true;
@@ -44,6 +50,9 @@ public class UserIOImpl implements UserIO {
         return string;
 	}
 
+	/**
+	 * Read big decimal from user
+	 */
 	public BigDecimal readBigDecimal() {
         boolean invalidInput = true;
         BigDecimal decimal = new BigDecimal("0.0");
@@ -59,6 +68,11 @@ public class UserIOImpl implements UserIO {
         }
         return decimal;
 	}
+	
+	/**
+	 * Read big decimal from user String
+	 * @param decimalOriginal
+	 */
 	public BigDecimal readBigDecimal(String decimalOriginal) {
         boolean invalidInput = true;
         BigDecimal decimal = new BigDecimal("0.0");
@@ -81,6 +95,9 @@ public class UserIOImpl implements UserIO {
         return decimal;
 	}
 
+	/**
+	 * Read int from user
+	 */
 	public int readInt() {
         boolean invalidInput = true;
         int num = 0;
@@ -97,11 +114,9 @@ public class UserIOImpl implements UserIO {
         return num;
 	}
 
-	public int readInt(String prompt, int min, int max) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	/**
+	 * Read date from user
+	 */
 	public LocalDate readDate() {
         LocalDate date = null;
         boolean validInput = true;
@@ -119,6 +134,11 @@ public class UserIOImpl implements UserIO {
         return date;
     }
 	
+	/**
+	 * Read product from user
+	 * @param products
+	 * @param productName
+	 */
 	public Product readProduct(List<Product> products,String productName) {
 		Product foundProduct = null;
 		for(Product p: products) {
@@ -129,6 +149,11 @@ public class UserIOImpl implements UserIO {
 		return foundProduct;
 	}
 
+	/**
+	 * Read state from user
+	 * @param states
+	 * @param stateNameAbr
+	 */
 	@Override
 	public State readState(List<State> states, String stateNameAbr) {
 		State foundState = null;
@@ -140,6 +165,10 @@ public class UserIOImpl implements UserIO {
 		return foundState;
 	}
 
+	/**
+	 * Read customer name from user
+	 * @param customerName
+	 */
 	@Override
 	public String readCustomerName(String customerName) {
         String string = customerName;
@@ -160,6 +189,9 @@ public class UserIOImpl implements UserIO {
         return string;
 	}
 
+	/**
+	 * Read if the user has enter yes or no to confirm an order
+	 */
 	@Override
 	public String readYesNo() {
         String string = null;
