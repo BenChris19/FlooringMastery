@@ -159,9 +159,10 @@ public class OrderDaoImpl implements OrderDao {
 			OrderAsText += o.getMaterialCost() + DELIMITER;
 			OrderAsText += o.getLaborCost() + DELIMITER;
 			OrderAsText += o.getTax() + DELIMITER;
-			OrderAsText += o.getTotal() + DELIMITER;
+			OrderAsText += o.getTotal();
 				out.println(OrderAsText);
-				out.flush();			
+				out.flush();
+				OrderAsText="";
 		}
 		out.close();
 	}

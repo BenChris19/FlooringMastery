@@ -109,12 +109,10 @@ public class FloorServiceImpl implements FloorService{
 	 */
 	public void editOrderExists(LocalDate date, int orderNum) throws DataPersistenceException, InvalidOrderNumberException, OrderValidationException {
 		Order editOrder = null;
-		boolean found=false;
         List<Order> ordersByDate = orderDao.getOrders(date);
         if (!ordersByDate.isEmpty()) {
         	for(Order o:ordersByDate) {
         		if(o.getOrderNumber()==orderNum) {
-        			found=true;
         			editOrder = o;
         		}
         	}

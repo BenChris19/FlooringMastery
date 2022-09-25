@@ -61,6 +61,10 @@ public class UserIOImpl implements UserIO {
             	String stringValue = sc.nextLine();
             	decimal = new BigDecimal(stringValue);
             	invalidInput=false;
+            	if (new BigDecimal("100").compareTo(decimal) < 0) {
+            		System.out.println("Please enter an area below 100 sq feet");
+            		invalidInput=true;
+            	}
                 
             } catch (NumberFormatException e) {
                 this.print("Input error. Please try again.");
@@ -115,7 +119,7 @@ public class UserIOImpl implements UserIO {
 	}
 
 	/**
-	 * Read date from user
+	 * Read date from user. Prompt same question if entered date is not in the future (Today does not count)
 	 */
 	public LocalDate readDate() {
         LocalDate date = null;
@@ -125,7 +129,13 @@ public class UserIOImpl implements UserIO {
                 String stringInput= sc.nextLine();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMddyyyy");
                 date = LocalDate.parse(stringInput,formatter); 
-                validInput = true;
+                if(LocalDate.now().isAfter(date)) {
+                	System.out.println("Please enter a future date");
+                	validInput = false;
+                }
+                else {
+                	validInput = true;
+                }
             } catch (DateTimeException e) {
                 this.print("Input error. Date is not in the correct format");
                 validInput = false;
@@ -175,7 +185,7 @@ public class UserIOImpl implements UserIO {
         boolean validInput = true;
         do {
             String stringInput= sc.nextLine();
-            Pattern p = Pattern.compile("[a-zA-Z0-9\\s]+"); //Regex
+            Pattern p = Pattern.compile("[a-zA-Z0-9\\s,.]+"); //Regex
             Matcher m = p.matcher(stringInput);
             if(m.matches() || stringInput.equals("")) {
             	string=stringInput;
